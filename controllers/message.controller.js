@@ -8,9 +8,9 @@ const PAGE_ACCESS_TOKEN =
 export function handleMessage(req, res) {
   let body = req.body;
 
-  // if from facebook page (messanger)
+  // if from Facebook page (Messenger)
   if (body.object === "page") {
-    body.entry.forEach(function (entry) {
+    body.entry.forEach(async function (entry) {
       let webhook_event = entry.messaging[0];
       console.log(webhook_event);
 
@@ -23,30 +23,39 @@ export function handleMessage(req, res) {
         let messageId = webhook_event.message.mid;
         let timestamp = webhook_event.timestamp;
 
-        // Save the message to the database
-        User.findOne({ clientId: sender_psid })
-          .then((user) => {
-            if (user) {
-              const newMessage = new Message({
-                user: user._id,
-                messageId: messageId,
-                platform: "Messenger",
-                timestamp: new Date(timestamp),
-                type: "txt",
-                messageObj: { text: messageText },
-                senderType: "client",
-                isRead: false,
-                isHandled: false,
-              });
+        try {
+          let user = await User.findOne({ clientId: sender_psid });
+          if (!user) {
+            // If user doesn't exist, create a new one
+            user = await User.create({
+              clientId: sender_psid,
+              details: {
+                name: "New User",
+                email: "newuser@example.com",
+              },
+              contacts: [], // Add user's contacts if available
+              salesStage: "new", // Set default sales stage
+            });
+          }
 
-              return newMessage.save();
-            } else {
-              console.log("User not found");
-            }
-          })
-          .catch((err) => {
-            console.error("Error occurred while saving message:", err);
+          // Save the message to the database
+          const newMessage = new Message({
+            user: user._id,
+            messageId: messageId,
+            platform: "Messenger",
+            timestamp: new Date(timestamp),
+            type: "txt",
+            messageObj: { text: messageText },
+            senderType: "client",
+            isRead: false,
+            isHandled: false,
           });
+
+          await newMessage.save();
+          console.log("Message saved successfully");
+        } catch (error) {
+          console.error("Error occurred while saving message:", error);
+        }
       }
     });
 
