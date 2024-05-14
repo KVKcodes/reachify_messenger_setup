@@ -17,6 +17,20 @@ export async function handleMessage(req, res) {
       let sender_psid = webhook_event.sender.id;
       console.log("Sender PSID: " + sender_psid);
 
+      let user = await User.findOne({ clientId: sender_psid });
+      if (!user) {
+        // If user doesn't exist, create a new one
+        user = await User.create({
+          clientId: sender_psid,
+          details: {
+            name: "New User",
+            email: "newuser@example.com",
+          },
+          contacts: [],
+          salesStage: "new",
+        });
+      }
+
       // Get the message data
       if (webhook_event.message) {
         let messageText = webhook_event.message.text;
@@ -24,20 +38,6 @@ export async function handleMessage(req, res) {
         let timestamp = webhook_event.timestamp;
 
         try {
-          let user = await User.findOne({ clientId: sender_psid });
-          if (!user) {
-            // If user doesn't exist, create a new one
-            user = await User.create({
-              clientId: sender_psid,
-              details: {
-                name: "New User",
-                email: "newuser@example.com",
-              },
-              contacts: [],
-              salesStage: "new",
-            });
-          }
-
           // Save the message to the database
           const newMessage = new Message({
             user: user._id,
@@ -63,6 +63,9 @@ export async function handleMessage(req, res) {
         } catch(error) {
           console.error("Error sending the response to the user:", error);
         }
+      }
+      else if (webhook_event.message) {
+        
       }
     });
 
@@ -259,7 +262,7 @@ function respondMessenger(sender_psid, response) {
   // Send the HTTP request to the Messenger Platform
   request(
     {
-      uri: "https://graph.facebook.com/v7.0/me/messages",
+      uri: "https://graph.facebook.com/v11.0/me/messages",
       qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
       method: "POST",
       json: request_body,
