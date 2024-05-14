@@ -1,7 +1,8 @@
 import User from "../models/user.js";
 import Message from "../models/message.js";
 
-const PAGE_ACCESS_TOKEN = "YOUR_PAGE_ACCESS_TOKEN";
+const PAGE_ACCESS_TOKEN =
+  "EAAQK0C6ZCTcUBOZC3R6DPBfm2sZAZAIlJt4GiZAeUkFLjEwWPbg2OzVGbcvvHnv6uwi1POD8ls1wQofeqCryWws1VfuXd422yYJVilvYWoIgJFaOJUOM0bmWTMNcBZBl6cmsN86Qi6G6AZBtppWuiuqUEDUx64Nn4BHjtOQv0IBKZA85Hqzfk1HUCOsbI72ayQZDZD";
 
 // Function to handle incoming messages
 export function handleMessage(req, res) {

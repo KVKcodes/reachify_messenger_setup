@@ -7,8 +7,12 @@ import {
 
 const router = express.Router();
 
-router.post("/webhook", handleMessage);
-router.get("/webhook", getWebhook);
-router.post("/send", send);
+let initWebRoutes = (app) => {
+  router.post("/webhook", handleMessage);
+  router.get("/webhook", getWebhook);
+  router.post("/send", send);
 
-module.exports = router;
+  return app.use("/", router);
+};
+
+export default initWebRoutes;

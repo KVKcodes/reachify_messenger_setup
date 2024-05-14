@@ -4,6 +4,7 @@ import { readdirSync } from "fs";
 import { config } from "dotenv";
 import bodyParser from "body-parser";
 import cors from "cors";
+import initWebRoutes from "./routes/message";
 config();
 
 const app = express();
@@ -25,7 +26,7 @@ mongoose
   .catch((err) => console.log("DB connection error =>", err));
 
 //autoload Routes
-readdirSync("./routes").map((r) => app.use("/", require(`./routes/${r}`)));
+initWebRoutes(app);
 
 app.use((err, req, res, next) => {
   if (err.name === "UnauthorizedError") {
