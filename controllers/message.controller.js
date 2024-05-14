@@ -149,16 +149,14 @@ export const getWebhook = (req, res) => {
 export async function send(req, res) {
   const { platform, recipientId, messageText } = req.body;
 
-  response = {
-    text: messageText,
-  };
-
   try {
     let success = false;
     if (platform === "messenger") {
-      success = await sendMessageToMessenger(recipientId, response);
+      // Correct recipientId format
+      const recipientPSID = parseInt(recipientId);
+      success = await sendMessageToMessenger(recipientPSID, messageText);
     } else if (platform === "instagram") {
-      success = await sendMessageToInstagram(recipientId, response);
+      success = await sendMessageToInstagram(recipientId, messageText);
     } else {
       throw new Error("Invalid platform specified");
     }
@@ -175,31 +173,31 @@ export async function send(req, res) {
 }
 
 // send message via facebook messanger
-async function sendMessageToMessenger(recipientId, response) {
-  const request_body = {
+async function sendMessageToMessenger(recipientId, messageText) {
+  const requestBody = {
     recipient: {
-      id: recipientId,
+      id: recipientId.toString(), // Convert recipientId to string
     },
-    message: response,
+    message: {
+      text: messageText,
+    },
   };
 
   try {
-    request(
+    const response = await fetch(
+      `https://graph.facebook.com/v11.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
       {
-        uri: "https://graph.facebook.com/v6.0/me/messages",
-        qs: { access_token: PAGE_ACCESS_TOKEN },
         method: "POST",
-        json: request_body,
-      },
-      (err, res, body) => {
-        if (!err) {
-          console.log("message sent!");
-          console.log(`My message: ${response}`);
-        } else {
-          console.error("Unable to send message:" + err);
-        }
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
       }
     );
+
+    if (!response.ok) {
+      throw new Error("Failed to send message to Messenger");
+    }
 
     console.log("Message sent successfully to Messenger");
     return true;
