@@ -26,12 +26,7 @@ export async function handleMessage(req, res) {
         let timestamp = webhook_event.timestamp;
 
         try {
-          // Check if user exists based on clientId and platform
-          let user = await User.findOne({
-            clientId: sender_psid,
-            platform: "Messenger", // Add platform check
-          });
-
+          let user = await User.findOne({ clientId: sender_psid });
           if (!user) {
             // If user doesn't exist, create a new one
             user = await User.create({
@@ -42,7 +37,6 @@ export async function handleMessage(req, res) {
               },
               contacts: [],
               salesStage: "new",
-              platform: "Messenger", // Set the platform
             });
           }
 
