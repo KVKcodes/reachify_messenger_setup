@@ -2,8 +2,7 @@ import request from "request";``
 import User from "../models/user.js";
 import Message from "../models/message.js";
 
-const PAGE_ACCESS_TOKEN =
-  "EAAQK0C6ZCTcUBOZC3R6DPBfm2sZAZAIlJt4GiZAeUkFLjEwWPbg2OzVGbcvvHnv6uwi1POD8ls1wQofeqCryWws1VfuXd422yYJVilvYWoIgJFaOJUOM0bmWTMNcBZBl6cmsN86Qi6G6AZBtppWuiuqUEDUx64Nn4BHjtOQv0IBKZA85Hqzfk1HUCOsbI72ayQZDZD";
+const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
 
 // Function to handle incoming messages
 export async function handleMessage(req, res) {
