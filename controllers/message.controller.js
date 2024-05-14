@@ -56,7 +56,7 @@ export async function handleMessage(req, res) {
         } catch (error) {
           console.error("Error occurred while saving message:", error);
         }
-        //send automatically to the user
+        //send some response automatically to the user
         try {
           const response_message= `You sent the message: "${ messageText }". UwU`;
           respondMessenger(sender_psid, response_message)
@@ -64,8 +64,26 @@ export async function handleMessage(req, res) {
           console.error("Error sending the response to the user:", error);
         }
       }
-      else if (webhook_event.message) {
-        
+      
+      if (webhook_event.delivery) {
+        let delivery = webhook_event.delivery;
+        let messageIds = delivery.mids;
+        let watermark = delivery.watermark;
+        try {
+          // Update the delivery status of the messages in the database
+          await Message.updateMany(
+            { messageId: { $in: messageIds } },
+            {
+              $set: {
+                'deliveryStatus.isDelivered': true,
+                'deliveryStatus.deliveryTimestamp': new Date(watermark),
+              },
+            }
+          );
+          console.log("Message delivery status updated successfully");
+        } catch (error) {
+          console.error("Error occurred while updating message delivery status:", error);
+        }
       }
     });
 
@@ -262,7 +280,7 @@ function respondMessenger(sender_psid, response) {
   // Send the HTTP request to the Messenger Platform
   request(
     {
-      uri: "https://graph.facebook.com/v11.0/me/messages",
+      uri: "https://graph.facebook.com/v19.0/me/messages",
       qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
       method: "POST",
       json: request_body,

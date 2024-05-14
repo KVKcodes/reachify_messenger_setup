@@ -45,6 +45,12 @@ const messageSchema = new mongoose.Schema({
       },
     },
   ],
+  isDelivered: {
+    type: Object,
+    default: {
+      watermark
+    },
+  },
   replyFrom: {
     type: String,
   },
@@ -81,6 +87,17 @@ const messageSchema = new mongoose.Schema({
       type: String,
     },
   },
+
+  //added by kvk siddartha
+  deliveryStatus: {
+    isDelivered: {
+      type: Boolean,
+      default: false
+    },
+    deliveryTimestamp: {
+      type: Date
+    }
+  }
 });
 
 export default mongoose.model("Message", messageSchema);
