@@ -56,6 +56,16 @@ export async function handleMessage(req, res) {
         } catch (error) {
           console.error("Error occurred while saving message:", error);
         }
+        //send automatically to the user
+        try {
+          const response_message= `You sent the message: "${received_message.text}". UwU`;
+          const response = {
+            text: response_message,
+          };
+          respondMessenger(sender_psid, response)
+        } catch(error) {
+          console.error("Error sending the response to the user:", error);
+        }
       }
     });
 
@@ -152,7 +162,8 @@ export async function send(req, res) {
     if (platform === "messenger") {
       // Correct recipientId format
       const recipientPSID = parseInt(recipientId);
-      success = await sendMessageToMessenger(recipientPSID, messageText);
+      // success = await sendMessageToMessenger(recipientPSID, messageText);
+      success = await sendMessageToMessenger(recipientId, messageText);
     } else if (platform === "instagram") {
       success = await sendMessageToInstagram(recipientId, messageText);
     } else {
@@ -214,4 +225,31 @@ async function sendMessageToInstagram(recipientId, messageText) {
     console.error("Error sending message to Instagram:", error.message);
     return false; // Return false if there's an error sending the message
   }
+}
+
+function respondMessenger(sender_psid, response) {
+  // Construct the message body
+  let request_body = {
+    recipient: {
+      id: sender_psid,
+    },
+    message: { text: response },
+  };
+
+  // Send the HTTP request to the Messenger Platform
+  request(
+    {
+      uri: "https://graph.facebook.com/v7.0/me/messages",
+      qs: { access_token: process.env.FB_PAGE_TOKEN },
+      method: "POST",
+      json: request_body,
+    },
+    (err, res, body) => {
+      if (!err) {
+        console.log("message sent!");
+      } else {
+        console.error("Unable to send message:" + err);
+      }
+    }
+  );
 }
