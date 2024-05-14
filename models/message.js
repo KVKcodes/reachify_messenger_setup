@@ -83,15 +83,15 @@ const messageSchema = new mongoose.Schema({
   },
 
   //added by kvk siddartha
-  deliveryStatus: {
-    isDelivered: {
-      type: Boolean,
-      default: false
-    },
-    deliveryTimestamp: {
-      type: Date
-    }
-  }
+  // deliveryStatus: {
+  //   isDelivered: {
+  //     type: Boolean,
+  //     default: false
+  //   },
+  //   deliveryTimestamp: {
+  //     type: Date
+  //   }
+  // }
 });
 
 export default mongoose.model("Message", messageSchema);

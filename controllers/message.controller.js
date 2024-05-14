@@ -65,24 +65,41 @@ export async function handleMessage(req, res) {
         }
       }
       
-      if (webhook_event.delivery) {
-        let delivery = webhook_event.delivery;
-        let messageIds = delivery.mids;
-        let watermark = delivery.watermark;
+      //handling message delivery
+      // if (webhook_event.delivery) {
+      //   let delivery = webhook_event.delivery;
+      //   let messageIds = delivery.mids;
+      //   let watermark = delivery.watermark;
+      //   try {
+      //     // Update the delivery status of the messages in the database
+      //     await Message.updateMany(
+      //       { messageId: { $in: messageIds } },
+      //       {
+      //         $set: {
+      //           'deliveryStatus.isDelivered': true,
+      //           'deliveryStatus.deliveryTimestamp': new Date(watermark),
+      //         },
+      //       }
+      //     );
+      //     console.log("Message delivery status updated successfully");
+      //   } catch (error) {
+      //     console.error("Error occurred while updating message delivery status:", error);
+      //   }
+      // }
+
+      if (webhook_event.message && webhook_event.message.is_echo) {
+        // Extract edited message information
+        let editedMessage = webhook_event.message;
+  
         try {
-          // Update the delivery status of the messages in the database
-          await Message.updateMany(
-            { messageId: { $in: messageIds } },
-            {
-              $set: {
-                'deliveryStatus.isDelivered': true,
-                'deliveryStatus.deliveryTimestamp': new Date(watermark),
-              },
-            }
+          // Update the original message in the database with the edited content
+          await Message.findOneAndUpdate(
+            { messageId: editedMessage.mid },
+            { $set: { "messageObj.text": editedMessage.text } }
           );
-          console.log("Message delivery status updated successfully");
+          console.log("Message edit handled successfully");
         } catch (error) {
-          console.error("Error occurred while updating message delivery status:", error);
+          console.error("Error occurred while handling message edit:", error);
         }
       }
     });
