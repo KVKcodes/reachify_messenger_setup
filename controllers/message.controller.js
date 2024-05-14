@@ -58,7 +58,7 @@ export async function handleMessage(req, res) {
         }
         //send automatically to the user
         try {
-          const response_message= `You sent the message: "${received_message.text}". UwU`;
+          const response_message= `You sent the message: "${ messageText }". UwU`;
           const response = {
             text: response_message,
           };
