@@ -240,13 +240,13 @@ function respondMessenger(sender_psid, response) {
   request(
     {
       uri: "https://graph.facebook.com/v7.0/me/messages",
-      qs: { access_token: process.env.FB_PAGE_TOKEN },
+      qs: { access_token: process.env.PAGE_ACCESS_TOKEN },
       method: "POST",
       json: request_body,
     },
     (err, res, body) => {
       if (!err) {
-        console.log("message sent!");
+        console.log("Message sent!");
       } else {
         console.error("Unable to send message:" + err);
       }
