@@ -119,7 +119,7 @@ export async function handleMessage(req, res) {
 // webhook setup
 export const getWebhook = (req, res) => {
   //  TODO: Update verify_token
-  const VERIFY_TOKEN = "verifykarnekeylieytokenhai123";
+  const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 
   // Parse params from the webhook verification request
   let mode = req.query["hub.mode"];
