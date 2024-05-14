@@ -211,5 +211,11 @@ async function sendMessageToMessenger(recipientId, response) {
 
 // Function to send a message via Instagram
 async function sendMessageToInstagram(recipientId, messageText) {
-  //TODO: complete the function
+  try {
+    //TODO  Instagram message sending logic here
+    return true; // Return true if the message is sent successfully
+  } catch (error) {
+    console.error("Error sending message to Instagram:", error.message);
+    return false; // Return false if there's an error sending the message
+  }
 }
