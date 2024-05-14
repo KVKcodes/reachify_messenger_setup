@@ -33,8 +33,8 @@ export async function handleMessage(req, res) {
                 name: "New User",
                 email: "newuser@example.com",
               },
-              contacts: [], // Add user's contacts if available
-              salesStage: "new", // Set default sales stage
+              contacts: [],
+              salesStage: "new",
             });
           }
 
@@ -215,12 +215,35 @@ async function sendMessageToMessenger(recipientId, messageText) {
 
 // Function to send a message via Instagram
 async function sendMessageToInstagram(recipientId, messageText) {
+  // Construct the request body
+  const requestBody = {
+    recipient: {
+      id: recipientId,
+    },
+    message: messageText,
+  };
+
   try {
-    //TODO  Instagram message sending logic here
-    return true; // Return true if the message is sent successfully
+    const response = await fetch(
+      `https://graph.facebook.com/v11.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to send message to Instagram");
+    }
+
+    console.log("Message sent successfully to Instagram");
+    return true;
   } catch (error) {
     console.error("Error sending message to Instagram:", error.message);
-    return false; // Return false if there's an error sending the message
+    return false;
   }
 }
 
