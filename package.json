@@ -2,9 +2,10 @@
   "name": "reachify",
   "version": "1.0.0",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon -r esm server.js"
+    "start": "nodemon server.js"
   },
   "author": "Reachify team",
   "license": "ISC",

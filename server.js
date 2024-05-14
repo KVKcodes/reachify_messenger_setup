@@ -4,7 +4,7 @@ import { readdirSync } from "fs";
 import { config } from "dotenv";
 import bodyParser from "body-parser";
 import cors from "cors";
-import initWebRoutes from "./routes/message";
+import initWebRoutes from "./routes/message.js";
 config();
 
 const app = express();
