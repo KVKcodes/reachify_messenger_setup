@@ -31,16 +31,16 @@ const messageSchema = new mongoose.Schema({
     {
       url: {
         type: String,
-        required: true,
+        // required: true,
       },
       metadata: {
         type: {
           type: String,
-          required: true,
+          // required: true,
         },
         size: {
           type: Number,
-          required: true,
+          // required: true,
         },
       },
     },
@@ -83,4 +83,4 @@ const messageSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Message", messageSchema);
+export default mongoose.model("Message", messageSchema);
