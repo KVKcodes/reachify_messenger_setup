@@ -62,7 +62,19 @@ export function handleMessage(req, res) {
     res.status(200).send("EVENT_RECEIVED");
   }
   //  TODO: handle incomming message from Instagram
-  else {
+  else if (body.object == "instagram") {
+    body.entry.forEach(function (entry) {
+      // Gets the body of the webhook event
+      let webhook_event = entry.messaging[0];
+      console.log(webhook_event);
+
+      // Get the sender ID
+      let sender_id = webhook_event.sender.id;
+      console.log("Sender ID: " + sender_id);
+      if (webhook_event.message) {
+      }
+    });
+  } else {
     res.sendStatus(404);
   }
 }
@@ -97,12 +109,16 @@ export const getWebhook = (req, res) => {
 export async function send(req, res) {
   const { platform, recipientId, messageText } = req.body;
 
+  response = {
+    text: messageText,
+  };
+
   try {
     let success = false;
     if (platform === "messenger") {
-      success = await sendMessageToMessenger(recipientId, messageText);
+      success = await sendMessageToMessenger(recipientId, response);
     } else if (platform === "instagram") {
-      success = await sendMessageToInstagram(recipientId, messageText);
+      success = await sendMessageToInstagram(recipientId, response);
     } else {
       throw new Error("Invalid platform specified");
     }
@@ -119,32 +135,31 @@ export async function send(req, res) {
 }
 
 // send message via facebook messanger
-async function sendMessageToMessenger(recipientId, messageText) {
-  // const PAGE_ACCESS_TOKEN = "YOUR_PAGE_ACCESS_TOKEN";
-  const requestBody = {
+async function sendMessageToMessenger(recipientId, response) {
+  const request_body = {
     recipient: {
       id: recipientId,
     },
-    message: {
-      text: messageText,
-    },
+    message: response,
   };
 
   try {
-    const response = await fetch(
-      `https://graph.facebook.com/v11.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
+    request(
       {
+        uri: "https://graph.facebook.com/v6.0/me/messages",
+        qs: { access_token: PAGE_ACCESS_TOKEN },
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
+        json: request_body,
+      },
+      (err, res, body) => {
+        if (!err) {
+          console.log("message sent!");
+          console.log(`My message: ${response}`);
+        } else {
+          console.error("Unable to send message:" + err);
+        }
       }
     );
-
-    if (!response.ok) {
-      throw new Error("Failed to send message to Messenger");
-    }
 
     console.log("Message sent successfully to Messenger");
     return true;
