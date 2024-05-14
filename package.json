@@ -15,7 +15,8 @@
     "dotenv": "^16.4.5",
     "esm": "^3.2.25",
     "express": "^4.19.2",
-    "mongoose": "^5.12.1"
+    "mongoose": "^5.12.1",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "@types/node": "^20.12.11"
