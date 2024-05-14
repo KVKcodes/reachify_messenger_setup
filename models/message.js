@@ -92,6 +92,16 @@ const messageSchema = new mongoose.Schema({
   //     type: Date
   //   }
   // }
+
+  reactionStatus: {
+    reactionType: {
+      type: String,
+      enum: ["smile","angry","sad","wow","love","like","dislike","other"],
+    },
+    reactedTimestamp: {
+      type: Date,
+    },
+  }
 });
 
 export default mongoose.model("Message", messageSchema);

@@ -95,13 +95,37 @@ export async function handleMessage(req, res) {
           // Update the original message in the database with the edited content
           await Message.findOneAndUpdate(
             { messageId: editedMessage.mid },
-            { $set: { "messageObj.text": editedMessage.text } }
+            {           
+              $set: {
+                'deliveryStatus.isDelivered': true,
+                'deliveryStatus.deliveryTimestamp': new Date(watermark),
+              },
+            }
           );
           console.log("Message edit handled successfully");
         } catch (error) {
           console.error("Error occurred while handling message edit:", error);
         }
       }
+
+      if (webhook_event.message_reactions) {
+        let reaction = webhook_event.message_reactions[0];
+        let reactionType = reaction.reaction;
+        let reactedMessageId = reaction.mid;
+        let timestamp = webhook_event.timestamp;
+  
+        try {
+          // Update the reacted message in the database
+          await Message.findOneAndUpdate(
+            { messageId: reactedMessageId },
+            { $set: { reactionType: reactionType, reactedTimestamp: new Date(timestamp) } }
+          );
+          console.log("Message reaction updated successfully");
+        } catch (error) {
+          console.error("Error occurred while updating message reaction:", error);
+        }
+      }
+  
     });
 
     res.status(200).send("EVENT_RECEIVED");
