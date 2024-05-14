@@ -45,12 +45,6 @@ const messageSchema = new mongoose.Schema({
       },
     },
   ],
-  isDelivered: {
-    type: Object,
-    default: {
-      watermark
-    },
-  },
   replyFrom: {
     type: String,
   },
