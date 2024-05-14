@@ -59,10 +59,7 @@ export async function handleMessage(req, res) {
         //send automatically to the user
         try {
           const response_message= `You sent the message: "${ messageText }". UwU`;
-          const response = {
-            text: response_message,
-          };
-          respondMessenger(sender_psid, response)
+          respondMessenger(sender_psid, response_message)
         } catch(error) {
           console.error("Error sending the response to the user:", error);
         }
