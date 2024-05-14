@@ -108,7 +108,7 @@ export async function handleMessage(req, res) {
         }
       }
 
-      if (webhook_event.message_reactions) {
+      if (webhook_event.field==="message_reactions") {
         let reaction = webhook_event.message_reactions[0];
         let reactionType = reaction.reaction;
         let reactedMessageId = reaction.mid;

@@ -99,7 +99,7 @@ const messageSchema = new mongoose.Schema({
       enum: ["smile","angry","sad","wow","love","like","dislike","other"],
     },
     reactedTimestamp: {
-      type: Date,
+      type: Date
     },
   }
 });
